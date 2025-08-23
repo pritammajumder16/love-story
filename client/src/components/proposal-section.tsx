@@ -3,48 +3,32 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Clock, Sparkles, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-
-interface ProposalResponse {
-  response: "yes" | "maybe" | "no";
-  message?: string;
-}
+import { proposalText, personalInfo } from "@/data/demoData";
 
 export function ProposalSection() {
   const [hasResponded, setHasResponded] = useState(false);
   const [response, setResponse] = useState<string>("");
+  const [proposalResponses, setProposalResponses] = useState<Array<{id: string, response: string, message?: string, date: string}>>([]);
   const { toast } = useToast();
-
-  const proposalMutation = useMutation({
-    mutationFn: async (data: ProposalResponse) => {
-      const res = await apiRequest("POST", "/api/proposals", data);
-      return res.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Response Saved! 💕",
-        description: "Your response has been saved to our love story.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Oops!",
-        description: "There was an error saving your response. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const handleProposalResponse = (responseType: "yes" | "maybe") => {
     setResponse(responseType);
     setHasResponded(true);
 
-    // Save response to backend
-    proposalMutation.mutate({
+    // Save response locally
+    const newResponse = {
+      id: Date.now().toString(),
       response: responseType,
       message: responseType === "yes" ? "She said YES!" : "Thinking about it...",
+      date: new Date().toISOString()
+    };
+    
+    setProposalResponses(prev => [...prev, newResponse]);
+    
+    toast({
+      title: "Response Saved! 💕",
+      description: "Your response has been saved to our love story.",
     });
 
     // Create celebration effect for "yes"
@@ -82,7 +66,7 @@ export function ProposalSection() {
         <div className="max-w-4xl mx-auto">
           <ScrollReveal>
             <h2 className="font-romantic text-5xl md:text-6xl font-bold text-white mb-8">
-              Paramita, Will You Marry Me?
+              {personalInfo.partnerName}, Will You Marry Me?
             </h2>
           </ScrollReveal>
 
@@ -97,18 +81,15 @@ export function ProposalSection() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.4}>
-            <div className="glass-effect rounded-3xl p-8 md:p-12 mb-12">
+            <div className="romantic-glass rounded-3xl p-8 md:p-12 mb-12">
               <p className="text-xl md:text-2xl text-white leading-relaxed mb-8">
-                From the moment we started talking on June 27th, 2025, I knew you were special. 
-                Every conversation, every laugh, every shared moment has only made me fall deeper 
-                in love with you. You are my best friend, my confidant, and the love of my life.
+                {proposalText.mainMessage}
               </p>
               <p className="text-lg md:text-xl text-white/90 italic mb-8">
-                I want to wake up next to you every morning, share all of life's adventures with you, 
-                and grow old together. You complete me in ways I never thought possible.
+                {proposalText.secondMessage}
               </p>
               <p className="text-2xl md:text-3xl font-romantic font-bold text-white mb-12">
-                So, Paro, my love, will you marry me and make me the happiest man alive?
+                {proposalText.finalQuestion}
               </p>
             </div>
           </ScrollReveal>
@@ -123,7 +104,6 @@ export function ProposalSection() {
               >
                 <Button
                   onClick={() => handleProposalResponse("yes")}
-                  disabled={proposalMutation.isPending}
                   className="bg-white text-romantic-purple px-12 py-4 rounded-full font-bold text-xl hover:bg-romantic-pink hover:text-white transition-all duration-300 transform hover:scale-105 shadow-2xl"
                   data-testid="button-yes-proposal"
                 >
@@ -132,7 +112,6 @@ export function ProposalSection() {
                 </Button>
                 <Button
                   onClick={() => handleProposalResponse("maybe")}
-                  disabled={proposalMutation.isPending}
                   variant="outline"
                   className="bg-transparent border-2 border-white text-white px-12 py-4 rounded-full font-bold text-xl hover:bg-white hover:text-romantic-purple transition-all duration-300 transform hover:scale-105"
                   data-testid="button-maybe-proposal"
@@ -158,10 +137,10 @@ export function ProposalSection() {
                       <PartyPopper className="mx-auto h-16 w-16 text-white mb-4" />
                     </motion.div>
                     <h3 className="font-romantic text-4xl md:text-5xl font-bold text-white mb-6">
-                      🎉 YES! She Said Yes! 🎉
+                      {proposalText.yesResponse}
                     </h3>
                     <p className="text-xl md:text-2xl text-white mb-8">
-                      I can't wait to start our forever together, my beautiful Paro!
+                      {proposalText.yesMessage}
                     </p>
                     <div className="text-6xl mb-6">💍💕🥳</div>
                     <p className="text-lg text-white/90 italic">
@@ -172,10 +151,10 @@ export function ProposalSection() {
                   <div className="glass-effect rounded-3xl p-8 md:p-12 shadow-2xl">
                     <Sparkles className="mx-auto h-12 w-12 text-white mb-4" />
                     <h3 className="font-romantic text-3xl font-bold text-white mb-4">
-                      Take All the Time You Need 💕
+                      {proposalText.maybeResponse}
                     </h3>
                     <p className="text-xl text-white/90">
-                      I'll wait forever for you, my love. You're worth every moment of waiting.
+                      {proposalText.maybeMessage}
                     </p>
                   </div>
                 )}

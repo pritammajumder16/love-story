@@ -1,52 +1,63 @@
 # Overview
 
-This is a romantic web application called "Forever Yours" - a personal love story platform that allows couples to document their relationship journey through diary entries, memories with media uploads, and interactive proposal responses. The application combines a romantic theme with modern web technologies to create an intimate digital space for sharing and preserving special moments.
+This is "Forever Yours" - a stunning romantic proposal web application created for Pritam to propose to Paramita. The app captures their love story through interactive diary entries, precious memories gallery, and a beautiful proposal section with animations and romantic effects.
 
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+App has been converted to pure client-side React for easy deployment to Vercel.
 
-# System Architecture
+# Current Architecture (Pure React App)
 
 ## Frontend Architecture
 - **Framework**: React with TypeScript using Vite as the build tool
-- **Routing**: Wouter for lightweight client-side routing
+- **Routing**: Wouter for lightweight client-side routing  
 - **UI Library**: Radix UI components with shadcn/ui styling system
-- **Styling**: Tailwind CSS with custom romantic color palette and CSS variables
-- **Animations**: Framer Motion for smooth transitions and interactive elements
-- **State Management**: TanStack React Query for server state management
+- **Styling**: Tailwind CSS with enhanced romantic color palette and beautiful gradients
+- **Animations**: Framer Motion for romantic transitions, floating hearts, and celebration effects
+- **State Management**: Local React state with useState hooks (no external state management)
 - **Form Handling**: React Hook Form with Zod validation
+- **Data Storage**: Constant arrays in `/src/data/demoData.ts` for easy customization
 
-The frontend follows a component-based architecture with:
-- Page components for main routes (Home, Diary, Memories)
-- Reusable UI components in the `/components/ui` directory
-- Custom romantic-themed components like FloatingHearts and RomanticButton
-- Responsive design with mobile-first approach
+## Key Features
+- **Personalized Home Page**: Love story hero section with animated proposal
+- **Interactive Diary**: Timeline of daily entries from June 27th, 2025 onwards
+- **Memories Gallery**: Beautiful photo/video gallery with romantic glass effects
+- **Proposal Section**: Interactive proposal with celebration animations
+- **Mobile Responsive**: Works perfectly on all devices
+- **Easy Customization**: All content editable via data constants
 
-## Backend Architecture
-- **Framework**: Express.js with TypeScript
-- **Database ORM**: Drizzle ORM for type-safe database operations
-- **File Uploads**: Multer middleware for handling image and video uploads
-- **Storage Strategy**: In-memory storage implementation with interface for future database integration
-- **API Design**: RESTful API endpoints for diary entries, memories, and proposal responses
+## Enhanced Romantic Theme
+- **Color Palette**: Rose gold, romantic pink, sunset gradients, lavender effects
+- **Typography**: Playfair Display, Dancing Script, Great Vibes fonts
+- **Animations**: Floating hearts, romantic glow effects, magical animations
+- **Glass Effects**: Beautiful backdrop blur with romantic gradients
+- **Love Cards**: Enhanced hover effects with shimmer animations
 
-The backend uses a storage interface pattern allowing for easy switching between in-memory storage (development) and database storage (production).
+## File Structure
+```
+client/
+├── public/images/          # User's personal photos go here
+├── src/
+│   ├── components/         # Reusable romantic components
+│   ├── data/demoData.ts   # All customizable content HERE
+│   ├── pages/             # Home, Diary, Memories pages
+│   └── index.css          # Enhanced romantic styling
+```
 
-## Data Storage Solutions
-- **Database**: PostgreSQL configured via Drizzle with Neon Database serverless connection
-- **File Storage**: Local file system for media uploads with configurable upload directory
-- **Schema Management**: Drizzle migrations with PostgreSQL dialect
-- **Data Validation**: Zod schemas shared between frontend and backend
+## Easy Customization Guide
+1. **Add Personal Images**: Place photos in `client/public/images/`
+2. **Edit Content**: Modify `client/src/data/demoData.ts` with your story
+3. **Customize Text**: Update names, dates, messages, and love reasons
+4. **Deploy**: Ready for easy conversion to Next.js + Vercel hosting
 
-## Authentication and Authorization
-- Currently uses session-based authentication setup (connect-pg-simple for session store)
-- User authentication schema defined but not fully implemented in current codebase
-- Prepared for future authentication implementation with user management endpoints
+## Next.js Conversion Ready
+The app structure is designed for seamless conversion to Next.js for free Vercel hosting. All components use standard React patterns and the file structure matches Next.js conventions.
 
-## External Service Integrations
-- **Database Hosting**: Neon Database for serverless PostgreSQL
-- **Development Tools**: Replit-specific plugins and configurations for cloud development environment
-- **Font Services**: Google Fonts integration for romantic typography (Playfair Display, Inter)
-- **Build Tools**: ESBuild for production bundling, TypeScript compiler for type checking
-
-The application architecture emphasizes type safety, romantic user experience, and scalable data management with a clear separation between client and server concerns.
+# Recent Changes (August 2025)
+- ✅ Removed all server-side code and database dependencies
+- ✅ Converted to pure client-side React with local state
+- ✅ Enhanced romantic theme with better colors and animations  
+- ✅ Created easy customization system via data constants
+- ✅ Added comprehensive image setup instructions
+- ✅ Prepared structure for easy Next.js conversion

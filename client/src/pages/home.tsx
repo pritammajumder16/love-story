@@ -4,6 +4,7 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { ProposalSection } from "@/components/proposal-section";
 import { RomanticButton } from "@/components/ui/romantic-button";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { personalInfo, loveReasons } from "@/data/demoData";
 
 export default function Home() {
   const scrollToProposal = () => {
@@ -16,23 +17,7 @@ export default function Home() {
     }
   };
 
-  const loveReasons = [
-    {
-      icon: Smile,
-      title: "Your Beautiful Smile",
-      description: "Every time you smile, my world lights up with a thousand stars. Your joy is contagious and makes every moment magical.",
-    },
-    {
-      icon: Heart,
-      title: "Your Kind Heart",
-      description: "Your compassion and kindness towards everyone around you shows the beautiful soul you have. You make the world a better place.",
-    },
-    {
-      icon: Star,
-      title: "Your Dreams",
-      description: "Your ambitions and dreams inspire me every day. I want to be part of your journey and support you in achieving everything you desire.",
-    },
-  ];
+  const iconMap = { "😊": Smile, "💝": Heart, "⭐": Star };
 
   return (
     <motion.div
@@ -63,12 +48,12 @@ export default function Home() {
           
           <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
             <motion.h1 
-              className="font-romantic text-6xl md:text-8xl font-bold mb-6"
+              className="font-romantic text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-rose-gold via-romantic-pink to-sunset bg-clip-text text-transparent"
               variants={fadeInUp}
               initial="hidden"
               animate="visible"
             >
-              Pritam & Paramita
+              {personalInfo.yourName} & {personalInfo.partnerName}
             </motion.h1>
             <motion.p 
               className="text-xl md:text-2xl mb-8"
@@ -86,8 +71,8 @@ export default function Home() {
               animate="visible"
               transition={{ delay: 0.6 }}
             >
-              <p className="mb-4">Since June 27th, 2025</p>
-              <p className="italic">From Mollargate, Kolkata to Habra Post Office Road, West Bengal</p>
+              <p className="mb-4 font-script text-2xl">Since {personalInfo.meetingDate}</p>
+              <p className="italic">From {personalInfo.yourLocation} to {personalInfo.partnerLocation}</p>
             </motion.div>
             <motion.div
               variants={fadeInUp}
@@ -115,7 +100,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="text-center mb-16">
               <h2 className="font-romantic text-5xl md:text-6xl font-bold text-romantic-purple mb-6">
-                Why I Love You, Paro
+                Why I Love You, {personalInfo.partnerNickname}
               </h2>
               <div className="w-24 h-1 bg-romantic-pink mx-auto"></div>
             </div>
@@ -128,7 +113,9 @@ export default function Home() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            {loveReasons.map((reason, index) => (
+            {loveReasons.map((reason, index) => {
+              const IconComponent = iconMap[reason.icon as keyof typeof iconMap] || Heart;
+              return (
               <ScrollReveal key={reason.title} delay={index * 0.2}>
                 <motion.div 
                   className="love-card bg-white rounded-3xl p-8 shadow-xl"
@@ -136,7 +123,7 @@ export default function Home() {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="text-center">
-                    <reason.icon className="mx-auto h-12 w-12 text-romantic-pink mb-6" />
+                    <IconComponent className="mx-auto h-12 w-12 text-romantic-pink mb-6" />
                     <h3 className="font-romantic text-2xl font-semibold text-romantic-purple mb-4">
                       {reason.title}
                     </h3>
@@ -146,7 +133,8 @@ export default function Home() {
                   </div>
                 </motion.div>
               </ScrollReveal>
-            ))}
+            );
+            })}
           </motion.div>
         </div>
       </section>
@@ -163,7 +151,7 @@ export default function Home() {
             <div className="mb-8">
               <h3 className="font-romantic text-3xl font-bold mb-4">Forever Yours</h3>
               <p className="text-white/80 max-w-2xl mx-auto">
-                This app is a testament to our love story, Paro. Every page, every animation, 
+                This app is a testament to our love story, {personalInfo.partnerNickname}. Every page, every animation, 
                 every word is crafted with love for you. I can't wait to spend forever making 
                 more memories together.
               </p>
@@ -173,7 +161,7 @@ export default function Home() {
               <span className="text-romantic-pink text-2xl">∞</span>
               <Heart className="text-romantic-pink text-2xl animate-heartbeat" fill="currentColor" />
             </div>
-            <p className="text-white/60">Made with ❤️ by Pritam for Paramita • June 2025</p>
+            <p className="text-white/60">Made with ❤️ by {personalInfo.yourName} for {personalInfo.partnerName} • {personalInfo.meetingDate}</p>
           </ScrollReveal>
         </div>
       </footer>

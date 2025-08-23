@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,15 +40,21 @@
   --font-serif: 'Georgia', serif;
   --font-mono: 'Menlo', monospace;
   --font-romantic: 'Playfair Display', serif;
+  --font-script: 'Dancing Script', cursive;
+  --font-elegant: 'Great Vibes', cursive;
   --radius: 1.3rem;
   
-  /* Romantic color palette */
-  --romantic-pink: hsl(342 89% 69%);
-  --romantic-purple: hsl(276 44% 56%);
-  --soft-pink: hsl(351 100% 86%);
-  --deep-purple: hsl(285 59% 66%);
-  --golden: hsl(31 92% 52%);
-  --romantic-dark: hsl(20 14% 4%);
+  /* Enhanced Romantic color palette */
+  --romantic-pink: hsl(340 85% 75%);
+  --romantic-purple: hsl(280 65% 65%);
+  --soft-pink: hsl(345 95% 90%);
+  --deep-purple: hsl(285 70% 45%);
+  --golden: hsl(38 95% 65%);
+  --romantic-dark: hsl(260 25% 15%);
+  --rose-gold: hsl(15 85% 75%);
+  --lavender: hsl(270 50% 85%);
+  --peach: hsl(25 95% 80%);
+  --sunset: hsl(350 90% 70%);
 }
 
 .dark {
@@ -101,18 +107,42 @@
     font-family: var(--font-romantic);
   }
   
+  .font-script {
+    font-family: var(--font-script);
+  }
+  
+  .font-elegant {
+    font-family: var(--font-elegant);
+  }
+  
   .gradient-bg {
-    background: linear-gradient(135deg, var(--romantic-pink) 0%, var(--deep-purple) 50%, var(--romantic-purple) 100%);
+    background: linear-gradient(135deg, var(--sunset) 0%, var(--romantic-pink) 25%, var(--deep-purple) 75%, var(--romantic-dark) 100%);
   }
   
   .romantic-gradient {
-    background: linear-gradient(45deg, var(--soft-pink), var(--romantic-pink), var(--deep-purple));
+    background: linear-gradient(45deg, var(--soft-pink), var(--romantic-pink), var(--rose-gold), var(--deep-purple));
+  }
+  
+  .dreamy-gradient {
+    background: linear-gradient(135deg, var(--lavender) 0%, var(--soft-pink) 50%, var(--peach) 100%);
+  }
+  
+  .sunset-gradient {
+    background: linear-gradient(45deg, var(--golden) 0%, var(--sunset) 50%, var(--romantic-pink) 100%);
   }
   
   .glass-effect {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  .romantic-glass {
+    background: linear-gradient(135deg, rgba(255, 192, 203, 0.2), rgba(221, 160, 221, 0.2));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
   }
   
   .parallax-bg {
@@ -137,6 +167,17 @@
 @keyframes sparkle {
   0%, 100% { opacity: 0; transform: scale(0); }
   50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes romantic-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.6), 0 0 60px rgba(221, 160, 221, 0.4); }
+}
+
+@keyframes magical-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-15px) rotate(120deg); }
+  66% { transform: translateY(-5px) rotate(240deg); }
 }
 
 @keyframes fadeInUp {
@@ -217,4 +258,42 @@
 .scroll-reveal.revealed {
   opacity: 1;
   transform: translateY(0);
+}
+
+.romantic-glow {
+  animation: romantic-glow 3s ease-in-out infinite;
+}
+
+.magical-float {
+  animation: magical-float 4s ease-in-out infinite;
+}
+
+/* Enhanced love card with better effects */
+.love-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.love-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 192, 203, 0.1), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.love-card:hover::before {
+  opacity: 1;
+  transform: rotate(45deg) translate(50%, 50%);
+}
+
+.love-card:hover {
+  transform: translateY(-15px) scale(1.03);
+  box-shadow: 0 30px 60px rgba(255, 107, 157, 0.4);
 }

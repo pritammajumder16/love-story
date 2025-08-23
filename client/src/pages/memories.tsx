@@ -8,44 +8,30 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { format, parseISO } from "date-fns";
 import { pageTransition, staggerContainer } from "@/lib/animations";
-import type { Memory } from "@shared/schema";
+import { demoMemoriesData } from "@/data/demoData";
+import type { Memory } from "@/data/demoData";
 
 const memoryFormSchema = z.object({
   date: z.string().min(1, "Date is required"),
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  file: z.instanceof(File).refine(
-    (file) => file.size <= 50 * 1024 * 1024,
-    "File must be less than 50MB"
-  ).refine(
-    (file) => {
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'video/mp4', 'video/mov', 'video/avi'];
-      return allowedTypes.includes(file.type);
-    },
-    "Only image and video files are allowed"
-  ),
+  image: z.string().min(1, "Please provide an image URL or path"),
 });
 
 type MemoryFormData = z.infer<typeof memoryFormSchema>;
 
 export default function Memories() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [memories, setMemories] = useState<Memory[]>(demoMemoriesData);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const { data: memories = [], isLoading } = useQuery<Memory[]>({
-    queryKey: ["/api/memories"],
-  });
 
   const form = useForm<MemoryFormData>({
     resolver: zodResolver(memoryFormSchema),
@@ -53,80 +39,36 @@ export default function Memories() {
       date: "",
       title: "",
       description: "",
-    },
-  });
-
-  const createMutation = useMutation({
-    mutationFn: async (data: MemoryFormData) => {
-      const formData = new FormData();
-      formData.append("date", data.date);
-      formData.append("title", data.title);
-      formData.append("description", data.description || "");
-      formData.append("file", data.file);
-
-      const res = await fetch("/api/memories", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to upload memory");
-      }
-
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/memories"] });
-      setIsDialogOpen(false);
-      setSelectedFile(null);
-      form.reset();
-      toast({
-        title: "Memory Saved! 💕",
-        description: "Your beautiful memory has been added to our collection.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Oops!",
-        description: "There was an error saving your memory. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const res = await apiRequest("DELETE", `/api/memories/${id}`);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/memories"] });
-      toast({
-        title: "Memory Deleted",
-        description: "The memory has been removed from our collection.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to delete memory. Please try again.",
-        variant: "destructive",
-      });
+      image: "",
     },
   });
 
   const onSubmit = (data: MemoryFormData) => {
-    if (selectedFile) {
-      createMutation.mutate({ ...data, file: selectedFile });
-    }
+    setIsLoading(true);
+    
+    const newMemory: Memory = {
+      id: Date.now().toString(),
+      ...data,
+      type: 'image', // Default to image for now
+    };
+    
+    setMemories(prev => [newMemory, ...prev]);
+    setIsDialogOpen(false);
+    form.reset();
+    setIsLoading(false);
+    
+    toast({
+      title: "Memory Saved! 💕",
+      description: "Your beautiful memory has been added to our collection.",
+    });
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      form.setValue("file", file);
-    }
+  const handleDeleteMemory = (id: string) => {
+    setMemories(prev => prev.filter(memory => memory.id !== id));
+    toast({
+      title: "Memory Deleted",
+      description: "The memory has been removed from our collection.",
+    });
   };
 
   const openAddDialog = () => {
@@ -134,8 +76,8 @@ export default function Memories() {
       date: format(new Date(), "yyyy-MM-dd"),
       title: "",
       description: "",
+      image: "",
     });
-    setSelectedFile(null);
     setIsDialogOpen(true);
   };
 
@@ -148,18 +90,18 @@ export default function Memories() {
       className="min-h-screen pt-24 pb-12"
     >
       {/* Header */}
-      <section className="py-20 bg-gradient-to-br from-romantic-dark via-deep-purple to-romantic-purple">
+      <section className="py-20 romantic-gradient">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="text-center mb-16">
               <h1 className="font-romantic text-5xl md:text-6xl font-bold text-white mb-6">
                 Our Precious Memories
               </h1>
-              <p className="text-xl text-white/80 max-w-3xl mx-auto">
+              <p className="text-xl text-white/90 max-w-3xl mx-auto">
                 Every moment we've shared is a treasure. This is our digital scrapbook where we'll 
                 keep all our beautiful memories forever.
               </p>
-              <div className="w-24 h-1 bg-romantic-pink mx-auto mt-6"></div>
+              <div className="w-24 h-1 bg-white/50 mx-auto mt-6"></div>
             </div>
           </ScrollReveal>
 
@@ -168,10 +110,10 @@ export default function Memories() {
             <div className="max-w-2xl mx-auto mb-16">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <div className="glass-effect rounded-3xl p-8 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
+                  <div className="romantic-glass rounded-3xl p-8 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
                     <Upload className="mx-auto h-12 w-12 text-white mb-4" />
                     <h3 className="font-romantic text-2xl font-semibold text-white mb-4">Add New Memory</h3>
-                    <p className="text-white/80 mb-6">Upload photos or videos from our special moments</p>
+                    <p className="text-white/80 mb-6">Add photos or videos from our special moments</p>
                     <RomanticButton 
                       onClick={openAddDialog}
                       variant="dreamy"
@@ -192,44 +134,20 @@ export default function Memories() {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                       <FormField
                         control={form.control}
-                        name="file"
-                        render={() => (
+                        name="image"
+                        render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Choose File</FormLabel>
+                            <FormLabel>Image URL or Path</FormLabel>
                             <FormControl>
-                              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                <input
-                                  type="file"
-                                  accept="image/*,video/*"
-                                  onChange={handleFileChange}
-                                  className="hidden"
-                                  id="file-upload"
-                                  data-testid="input-file"
-                                />
-                                <label htmlFor="file-upload" className="cursor-pointer">
-                                  {selectedFile ? (
-                                    <div className="flex items-center justify-center">
-                                      {selectedFile.type.startsWith('image/') ? (
-                                        <ImageIcon className="h-8 w-8 text-romantic-pink mr-2" />
-                                      ) : (
-                                        <Video className="h-8 w-8 text-romantic-pink mr-2" />
-                                      )}
-                                      <span className="text-romantic-purple font-medium">
-                                        {selectedFile.name}
-                                      </span>
-                                    </div>
-                                  ) : (
-                                    <div>
-                                      <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                                      <p className="text-gray-600">Click to choose a file</p>
-                                      <p className="text-sm text-gray-500 mt-2">
-                                        Images and videos up to 50MB
-                                      </p>
-                                    </div>
-                                  )}
-                                </label>
-                              </div>
+                              <Input 
+                                placeholder="/images/memory1.jpg or https://..." 
+                                {...field} 
+                                data-testid="input-image-url"
+                              />
                             </FormControl>
+                            <p className="text-sm text-gray-500">
+                              💡 Place your images in client/public/images/ and use /images/filename.jpg
+                            </p>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -289,7 +207,7 @@ export default function Memories() {
                         </Button>
                         <Button
                           type="submit"
-                          disabled={createMutation.isPending || !selectedFile}
+                          disabled={isLoading}
                           className="bg-romantic-pink hover:bg-deep-purple"
                           data-testid="button-save-memory"
                         >
@@ -307,20 +225,20 @@ export default function Memories() {
       </section>
 
       {/* Memory Gallery */}
-      <section className="py-20 bg-gradient-to-br from-romantic-dark via-deep-purple to-romantic-purple">
+      <section className="py-20 dreamy-gradient">
         <div className="container mx-auto px-4">
           {isLoading ? (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-romantic-pink mx-auto"></div>
-              <p className="mt-4 text-white/80">Loading our precious memories...</p>
+              <p className="mt-4 text-romantic-dark">Loading our precious memories...</p>
             </div>
           ) : memories.length === 0 ? (
             <ScrollReveal>
-              <Card className="max-w-md mx-auto text-center py-12 bg-white/10 border-white/20">
+              <Card className="max-w-md mx-auto text-center py-12 romantic-glass">
                 <CardContent>
-                  <Heart className="mx-auto h-12 w-12 text-white/60 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">No memories yet</h3>
-                  <p className="text-white/80">Start building your collection by adding your first memory!</p>
+                  <Heart className="mx-auto h-12 w-12 text-romantic-pink mb-4" />
+                  <h3 className="text-xl font-semibold text-romantic-dark mb-2">No memories yet</h3>
+                  <p className="text-romantic-purple">Start building your collection by adding your first memory!</p>
                 </CardContent>
               </Card>
             </ScrollReveal>
@@ -338,43 +256,36 @@ export default function Memories() {
                     whileHover={{ y: -10, scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <div className="glass-effect rounded-3xl p-6 relative group">
-                      {memory.mediaType === 'image' ? (
-                        <img
-                          src={memory.mediaUrl!}
-                          alt={memory.title}
-                          className="rounded-2xl w-full h-48 object-cover mb-4"
-                        />
-                      ) : (
-                        <video
-                          src={memory.mediaUrl!}
-                          className="rounded-2xl w-full h-48 object-cover mb-4"
-                          controls
-                          preload="metadata"
-                        />
-                      )}
+                    <div className="romantic-glass rounded-3xl p-6 relative group">
+                      <img
+                        src={memory.image}
+                        alt={memory.title}
+                        className="rounded-2xl w-full h-48 object-cover mb-4"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
+                        }}
+                      />
                       
                       {/* Delete button */}
                       <Button
                         variant="destructive"
                         size="icon"
                         className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        onClick={() => deleteMutation.mutate(memory.id)}
-                        disabled={deleteMutation.isPending}
+                        onClick={() => handleDeleteMemory(memory.id)}
                         data-testid={`button-delete-${memory.id}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
 
                       <div className="text-center">
-                        <h4 className="font-romantic text-xl font-semibold text-white mb-2">
+                        <h4 className="font-romantic text-xl font-semibold text-romantic-dark mb-2">
                           {memory.title}
                         </h4>
-                        <p className="text-romantic-pink font-medium mb-2">
+                        <p className="text-romantic-purple font-medium mb-2">
                           {format(parseISO(memory.date), "MMMM do, yyyy")}
                         </p>
                         {memory.description && (
-                          <p className="text-white/80 text-sm">{memory.description}</p>
+                          <p className="text-romantic-dark/80 text-sm">{memory.description}</p>
                         )}
                       </div>
                     </div>
@@ -390,9 +301,9 @@ export default function Memories() {
                   transition={{ type: "spring", stiffness: 300 }}
                   onClick={openAddDialog}
                 >
-                  <div className="glass-effect rounded-3xl p-6 border-2 border-dashed border-white/30 flex flex-col items-center justify-center h-64">
-                    <Heart className="h-12 w-12 text-white/50 mb-4" />
-                    <p className="text-white/70 text-center">Add more beautiful memories to our collection</p>
+                  <div className="romantic-glass rounded-3xl p-6 border-2 border-dashed border-romantic-pink/30 flex flex-col items-center justify-center h-64">
+                    <Heart className="h-12 w-12 text-romantic-pink/70 mb-4" />
+                    <p className="text-romantic-purple text-center">Add more beautiful memories to our collection</p>
                   </div>
                 </motion.div>
               </ScrollReveal>

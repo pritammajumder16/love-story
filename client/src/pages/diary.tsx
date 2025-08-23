@@ -8,16 +8,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { format, parseISO } from "date-fns";
 import { pageTransition, staggerContainer } from "@/lib/animations";
-import type { DiaryEntry } from "@shared/schema";
+import { demoEntriesData, personalInfo } from "@/data/demoData";
+import type { DiaryEntry } from "@/data/demoData";
 
 const diaryFormSchema = z.object({
   date: z.string().min(1, "Date is required"),
@@ -30,12 +29,9 @@ type DiaryFormData = z.infer<typeof diaryFormSchema>;
 export default function Diary() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<DiaryEntry | null>(null);
+  const [entries, setEntries] = useState<DiaryEntry[]>(demoEntriesData);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const { data: entries = [], isLoading } = useQuery<DiaryEntry[]>({
-    queryKey: ["/api/diary"],
-  });
 
   const form = useForm<DiaryFormData>({
     resolver: zodResolver(diaryFormSchema),
@@ -46,59 +42,40 @@ export default function Diary() {
     },
   });
 
-  const createMutation = useMutation({
-    mutationFn: async (data: DiaryFormData) => {
-      const res = await apiRequest("POST", "/api/diary", data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/diary"] });
-      setIsDialogOpen(false);
-      form.reset();
-      toast({
-        title: "Entry Added! 💕",
-        description: "Your diary entry has been saved to our love story.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Oops!",
-        description: "There was an error saving your entry. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async (data: DiaryFormData) => {
-      const res = await apiRequest("PUT", `/api/diary/${data.date}`, data);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/diary"] });
-      setIsDialogOpen(false);
+  const onSubmit = (data: DiaryFormData) => {
+    setIsLoading(true);
+    
+    if (editingEntry) {
+      // Update existing entry
+      setEntries(prev => prev.map(entry => 
+        entry.id === editingEntry.id 
+          ? { ...entry, ...data, id: editingEntry.id }
+          : entry
+      ));
       setEditingEntry(null);
-      form.reset();
       toast({
         title: "Entry Updated! 💕",
         description: "Your diary entry has been updated.",
       });
-    },
-    onError: () => {
-      toast({
-        title: "Oops!",
-        description: "There was an error updating your entry. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onSubmit = (data: DiaryFormData) => {
-    if (editingEntry) {
-      updateMutation.mutate(data);
     } else {
-      createMutation.mutate(data);
+      // Add new entry
+      const newEntry: DiaryEntry = {
+        id: Date.now().toString(),
+        ...data,
+        image: `/images/diary${entries.length + 1}.jpg`
+      };
+      setEntries(prev => [...prev, newEntry].sort((a, b) => 
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+      ));
+      toast({
+        title: "Entry Added! 💕", 
+        description: "Your diary entry has been saved to our love story.",
+      });
     }
+    
+    setIsDialogOpen(false);
+    form.reset();
+    setIsLoading(false);
   };
 
   const openAddDialog = () => {
@@ -138,7 +115,7 @@ export default function Diary() {
                 Our Love Story Diary
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Every day since June 27th, 2025, has been a new chapter in our beautiful love story. 
+                Every day since {personalInfo.meetingDate}, has been a new chapter in our beautiful love story. 
                 Here's our journey, day by day.
               </p>
               <div className="w-24 h-1 bg-romantic-pink mx-auto mt-6"></div>
@@ -222,7 +199,7 @@ export default function Diary() {
                         </Button>
                         <Button
                           type="submit"
-                          disabled={createMutation.isPending || updateMutation.isPending}
+                          disabled={isLoading}
                           className="bg-romantic-pink hover:bg-deep-purple"
                           data-testid="button-save-entry"
                         >
@@ -270,14 +247,12 @@ export default function Diary() {
                     >
                       <div className="md:w-1/3">
                         <img
-                          src={index % 3 === 0 
-                            ? "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-                            : index % 3 === 1
-                            ? "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-                            : "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"
-                          }
-                          alt="Romantic diary illustration"
+                          src={entry.image || `https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400`}
+                          alt={`Memory from ${entry.title}`}
                           className="rounded-2xl shadow-lg w-full h-64 object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
+                          }}
                         />
                       </div>
                       <div className={`md:w-2/3 ${index % 2 === 0 ? 'md:pl-8' : 'md:pr-8'}`}>

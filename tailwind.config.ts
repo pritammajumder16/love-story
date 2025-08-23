@@ -61,19 +61,25 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
-        // Romantic color palette
+        // Enhanced Romantic color palette
         'romantic-pink': 'var(--romantic-pink)',
         'romantic-purple': 'var(--romantic-purple)',
         'soft-pink': 'var(--soft-pink)',
         'deep-purple': 'var(--deep-purple)',
         'golden': 'var(--golden)',
         'romantic-dark': 'var(--romantic-dark)',
+        'rose-gold': 'var(--rose-gold)',
+        'lavender': 'var(--lavender)',
+        'peach': 'var(--peach)',
+        'sunset': 'var(--sunset)',
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
         romantic: ["var(--font-romantic)"],
+        script: ["var(--font-script)"],
+        elegant: ["var(--font-elegant)"],
       },
       keyframes: {
         "accordion-down": {
