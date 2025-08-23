@@ -4,8 +4,21 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { RomanticButton } from "@/components/ui/romantic-button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
@@ -44,14 +57,16 @@ export default function Diary() {
 
   const onSubmit = (data: DiaryFormData) => {
     setIsLoading(true);
-    
+
     if (editingEntry) {
       // Update existing entry
-      setEntries(prev => prev.map(entry => 
-        entry.id === editingEntry.id 
-          ? { ...entry, ...data, id: editingEntry.id }
-          : entry
-      ));
+      setEntries((prev) =>
+        prev.map((entry) =>
+          entry.id === editingEntry.id
+            ? { ...entry, ...data, id: editingEntry.id }
+            : entry
+        )
+      );
       setEditingEntry(null);
       toast({
         title: "Entry Updated! 💕",
@@ -62,17 +77,19 @@ export default function Diary() {
       const newEntry: DiaryEntry = {
         id: Date.now().toString(),
         ...data,
-        image: `/images/diary${entries.length + 1}.jpg`
+        image: `/images/diary${entries.length + 1}.jpg`,
       };
-      setEntries(prev => [...prev, newEntry].sort((a, b) => 
-        new Date(a.date).getTime() - new Date(b.date).getTime()
-      ));
+      setEntries((prev) =>
+        [...prev, newEntry].sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        )
+      );
       toast({
-        title: "Entry Added! 💕", 
+        title: "Entry Added! 💕",
         description: "Your diary entry has been saved to our love story.",
       });
     }
-    
+
     setIsDialogOpen(false);
     form.reset();
     setIsLoading(false);
@@ -104,7 +121,7 @@ export default function Diary() {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="min-h-screen pt-24 pb-12"
+      className="min-h-screen pt-16"
     >
       {/* Header */}
       <section className="py-20 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50">
@@ -115,8 +132,9 @@ export default function Diary() {
                 Our Love Story Diary
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Every day since {personalInfo.meetingDate}, has been a new chapter in our beautiful love story. 
-                Here's our journey, day by day.
+                Every day since {personalInfo.meetingDate}, has been a new
+                chapter in our beautiful love story. Here's our journey, day by
+                day.
               </p>
               <div className="w-24 h-1 bg-romantic-pink mx-auto mt-6"></div>
             </div>
@@ -127,7 +145,7 @@ export default function Diary() {
             <div className="text-center mb-12">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <RomanticButton 
+                  <RomanticButton
                     onClick={openAddDialog}
                     variant="romantic"
                     testId="button-add-entry"
@@ -143,7 +161,10 @@ export default function Diary() {
                     </DialogTitle>
                   </DialogHeader>
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6"
+                    >
                       <FormField
                         control={form.control}
                         name="date"
@@ -151,7 +172,11 @@ export default function Diary() {
                           <FormItem>
                             <FormLabel>Date</FormLabel>
                             <FormControl>
-                              <Input type="date" {...field} data-testid="input-date" />
+                              <Input
+                                type="date"
+                                {...field}
+                                data-testid="input-date"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -164,7 +189,11 @@ export default function Diary() {
                           <FormItem>
                             <FormLabel>Title</FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter a title for this day..." {...field} data-testid="input-title" />
+                              <Input
+                                placeholder="Enter a title for this day..."
+                                {...field}
+                                data-testid="input-title"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -226,8 +255,12 @@ export default function Diary() {
                 <Card className="text-center py-12">
                   <CardContent>
                     <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-600 mb-2">No entries yet</h3>
-                    <p className="text-gray-500">Start writing your love story by adding your first entry!</p>
+                    <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                      No entries yet
+                    </h3>
+                    <p className="text-gray-500">
+                      Start writing your love story by adding your first entry!
+                    </p>
                   </CardContent>
                 </Card>
               </ScrollReveal>
@@ -241,21 +274,31 @@ export default function Diary() {
                 {entries.map((entry, index) => (
                   <ScrollReveal key={entry.id} delay={index * 0.1}>
                     <motion.div
-                      className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8`}
+                      className={`flex flex-col ${
+                        index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                      } items-center gap-8`}
                       whileHover={{ scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
                       <div className="md:w-1/3">
                         <img
-                          src={entry.image || `https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400`}
+                          src={
+                            entry.image ||
+                            `https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400`
+                          }
                           alt={`Memory from ${entry.title}`}
                           className="rounded-2xl shadow-lg w-full h-64 object-cover"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
+                            (e.target as HTMLImageElement).src =
+                              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
                           }}
                         />
                       </div>
-                      <div className={`md:w-2/3 ${index % 2 === 0 ? 'md:pl-8' : 'md:pr-8'}`}>
+                      <div
+                        className={`md:w-2/3 ${
+                          index % 2 === 0 ? "md:pl-8" : "md:pr-8"
+                        }`}
+                      >
                         <Card className="love-card shadow-xl">
                           <CardHeader>
                             <div className="flex items-center justify-between">
@@ -268,7 +311,10 @@ export default function Diary() {
                                     {entry.title}
                                   </h3>
                                   <p className="text-romantic-pink font-medium">
-                                    {format(parseISO(entry.date), "MMMM do, yyyy")}
+                                    {format(
+                                      parseISO(entry.date),
+                                      "MMMM do, yyyy"
+                                    )}
                                   </p>
                                 </div>
                               </div>
@@ -284,7 +330,9 @@ export default function Diary() {
                             </div>
                           </CardHeader>
                           <CardContent>
-                            <p className="text-gray-600 leading-relaxed">{entry.content}</p>
+                            <p className="text-gray-600 leading-relaxed">
+                              {entry.content}
+                            </p>
                           </CardContent>
                         </Card>
                       </div>

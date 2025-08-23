@@ -1,11 +1,31 @@
 import { motion } from "framer-motion";
-import { Upload, Calendar, Trash2, Heart, Image as ImageIcon, Video } from "lucide-react";
+import {
+  Upload,
+  Calendar,
+  Trash2,
+  Heart,
+  Image as ImageIcon,
+  Video,
+} from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { RomanticButton } from "@/components/ui/romantic-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
@@ -45,18 +65,18 @@ export default function Memories() {
 
   const onSubmit = (data: MemoryFormData) => {
     setIsLoading(true);
-    
+
     const newMemory: Memory = {
       id: Date.now().toString(),
       ...data,
-      type: 'image', // Default to image for now
+      type: "image", // Default to image for now
     };
-    
-    setMemories(prev => [newMemory, ...prev]);
+
+    setMemories((prev) => [newMemory, ...prev]);
     setIsDialogOpen(false);
     form.reset();
     setIsLoading(false);
-    
+
     toast({
       title: "Memory Saved! 💕",
       description: "Your beautiful memory has been added to our collection.",
@@ -64,7 +84,7 @@ export default function Memories() {
   };
 
   const handleDeleteMemory = (id: string) => {
-    setMemories(prev => prev.filter(memory => memory.id !== id));
+    setMemories((prev) => prev.filter((memory) => memory.id !== id));
     toast({
       title: "Memory Deleted",
       description: "The memory has been removed from our collection.",
@@ -87,7 +107,7 @@ export default function Memories() {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="min-h-screen pt-24 pb-12"
+      className="min-h-screen pt-16"
     >
       {/* Header */}
       <section className="py-20 romantic-gradient">
@@ -98,8 +118,8 @@ export default function Memories() {
                 Our Precious Memories
               </h1>
               <p className="text-xl text-white/90 max-w-3xl mx-auto">
-                Every moment we've shared is a treasure. This is our digital scrapbook where we'll 
-                keep all our beautiful memories forever.
+                Every moment we've shared is a treasure. This is our digital
+                scrapbook where we'll keep all our beautiful memories forever.
               </p>
               <div className="w-24 h-1 bg-white/50 mx-auto mt-6"></div>
             </div>
@@ -112,9 +132,13 @@ export default function Memories() {
                 <DialogTrigger asChild>
                   <div className="romantic-glass rounded-3xl p-8 text-center cursor-pointer hover:bg-white/20 transition-all duration-300">
                     <Upload className="mx-auto h-12 w-12 text-white mb-4" />
-                    <h3 className="font-romantic text-2xl font-semibold text-white mb-4">Add New Memory</h3>
-                    <p className="text-white/80 mb-6">Add photos or videos from our special moments</p>
-                    <RomanticButton 
+                    <h3 className="font-romantic text-2xl font-semibold text-white mb-4">
+                      Add New Memory
+                    </h3>
+                    <p className="text-white/80 mb-6">
+                      Add photos or videos from our special moments
+                    </p>
+                    <RomanticButton
                       onClick={openAddDialog}
                       variant="dreamy"
                       testId="button-add-memory"
@@ -131,7 +155,10 @@ export default function Memories() {
                     </DialogTitle>
                   </DialogHeader>
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6"
+                    >
                       <FormField
                         control={form.control}
                         name="image"
@@ -139,14 +166,15 @@ export default function Memories() {
                           <FormItem>
                             <FormLabel>Image URL or Path</FormLabel>
                             <FormControl>
-                              <Input 
-                                placeholder="/images/memory1.jpg or https://..." 
-                                {...field} 
+                              <Input
+                                placeholder="/images/memory1.jpg or https://..."
+                                {...field}
                                 data-testid="input-image-url"
                               />
                             </FormControl>
                             <p className="text-sm text-gray-500">
-                              💡 Place your images in client/public/images/ and use /images/filename.jpg
+                              💡 Place your images in client/public/images/ and
+                              use /images/filename.jpg
                             </p>
                             <FormMessage />
                           </FormItem>
@@ -159,7 +187,11 @@ export default function Memories() {
                           <FormItem>
                             <FormLabel>Date</FormLabel>
                             <FormControl>
-                              <Input type="date" {...field} data-testid="input-memory-date" />
+                              <Input
+                                type="date"
+                                {...field}
+                                data-testid="input-memory-date"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -172,7 +204,11 @@ export default function Memories() {
                           <FormItem>
                             <FormLabel>Memory Title</FormLabel>
                             <FormControl>
-                              <Input placeholder="Give this memory a beautiful title..." {...field} data-testid="input-memory-title" />
+                              <Input
+                                placeholder="Give this memory a beautiful title..."
+                                {...field}
+                                data-testid="input-memory-title"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -230,15 +266,21 @@ export default function Memories() {
           {isLoading ? (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-romantic-pink mx-auto"></div>
-              <p className="mt-4 text-romantic-dark">Loading our precious memories...</p>
+              <p className="mt-4 text-romantic-dark">
+                Loading our precious memories...
+              </p>
             </div>
           ) : memories.length === 0 ? (
             <ScrollReveal>
               <Card className="max-w-md mx-auto text-center py-12 romantic-glass">
                 <CardContent>
                   <Heart className="mx-auto h-12 w-12 text-romantic-pink mb-4" />
-                  <h3 className="text-xl font-semibold text-romantic-dark mb-2">No memories yet</h3>
-                  <p className="text-romantic-purple">Start building your collection by adding your first memory!</p>
+                  <h3 className="text-xl font-semibold text-romantic-dark mb-2">
+                    No memories yet
+                  </h3>
+                  <p className="text-romantic-purple">
+                    Start building your collection by adding your first memory!
+                  </p>
                 </CardContent>
               </Card>
             </ScrollReveal>
@@ -262,10 +304,11 @@ export default function Memories() {
                         alt={memory.title}
                         className="rounded-2xl w-full h-48 object-cover mb-4"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
                         }}
                       />
-                      
+
                       {/* Delete button */}
                       <Button
                         variant="destructive"
@@ -285,7 +328,9 @@ export default function Memories() {
                           {format(parseISO(memory.date), "MMMM do, yyyy")}
                         </p>
                         {memory.description && (
-                          <p className="text-romantic-dark/80 text-sm">{memory.description}</p>
+                          <p className="text-romantic-dark/80 text-sm">
+                            {memory.description}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -303,7 +348,9 @@ export default function Memories() {
                 >
                   <div className="romantic-glass rounded-3xl p-6 border-2 border-dashed border-romantic-pink/30 flex flex-col items-center justify-center h-64">
                     <Heart className="h-12 w-12 text-romantic-pink/70 mb-4" />
-                    <p className="text-romantic-purple text-center">Add more beautiful memories to our collection</p>
+                    <p className="text-romantic-purple text-center">
+                      Add more beautiful memories to our collection
+                    </p>
                   </div>
                 </motion.div>
               </ScrollReveal>

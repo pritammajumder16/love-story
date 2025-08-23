@@ -9,7 +9,9 @@ import { proposalText, personalInfo } from "@/data/demoData";
 export function ProposalSection() {
   const [hasResponded, setHasResponded] = useState(false);
   const [response, setResponse] = useState<string>("");
-  const [proposalResponses, setProposalResponses] = useState<Array<{id: string, response: string, message?: string, date: string}>>([]);
+  const [proposalResponses, setProposalResponses] = useState<
+    Array<{ id: string; response: string; message?: string; date: string }>
+  >([]);
   const { toast } = useToast();
 
   const handleProposalResponse = (responseType: "yes" | "maybe") => {
@@ -20,12 +22,13 @@ export function ProposalSection() {
     const newResponse = {
       id: Date.now().toString(),
       response: responseType,
-      message: responseType === "yes" ? "She said YES!" : "Thinking about it...",
-      date: new Date().toISOString()
+      message:
+        responseType === "yes" ? "She said YES!" : "Thinking about it...",
+      date: new Date().toISOString(),
     };
-    
-    setProposalResponses(prev => [...prev, newResponse]);
-    
+
+    setProposalResponses((prev) => [...prev, newResponse]);
+
     toast({
       title: "Response Saved! 💕",
       description: "Your response has been saved to our love story.",
@@ -73,7 +76,7 @@ export function ProposalSection() {
           <ScrollReveal delay={0.2}>
             <div className="mb-12">
               <img
-                src="https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+                src="/images/rose.jpeg"
                 alt="Beautiful romantic illustration representing our love story"
                 className="rounded-3xl mx-auto shadow-2xl max-w-full h-auto"
               />
@@ -132,7 +135,11 @@ export function ProposalSection() {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                      transition={{
+                        delay: 0.3,
+                        type: "spring",
+                        stiffness: 200,
+                      }}
                     >
                       <PartyPopper className="mx-auto h-16 w-16 text-white mb-4" />
                     </motion.div>
@@ -144,7 +151,8 @@ export function ProposalSection() {
                     </p>
                     <div className="text-6xl mb-6">💍💕🥳</div>
                     <p className="text-lg text-white/90 italic">
-                      Get ready for a lifetime of love, laughter, and endless adventures together!
+                      Get ready for a lifetime of love, laughter, and endless
+                      adventures together!
                     </p>
                   </div>
                 ) : (

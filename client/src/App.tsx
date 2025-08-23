@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import Diary from "@/pages/diary";
 import Memories from "@/pages/memories";
 import NotFound from "@/pages/not-found";
+import Footer from "./pages/footer";
 
 function Router() {
   return (
@@ -22,11 +23,13 @@ function Router() {
 function App() {
   return (
     <TooltipProvider>
-      <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
+      <div className=" overflow-y-hidden min-h-screen overflow-x-hidden bg-background text-foreground">
         <FloatingHearts />
         <Navigation />
         <Toaster />
+
         <Router />
+        <Footer />
       </div>
     </TooltipProvider>
   );
