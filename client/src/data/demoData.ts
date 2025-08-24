@@ -13,7 +13,7 @@ export interface Memory {
   date: string;
   title: string;
   description?: string;
-  image: string;
+  images: string[];
   type: "image" | "video";
 }
 
@@ -24,7 +24,7 @@ export const demoEntriesData: DiaryEntry[] = [
     date: "2025-06-27",
     title: "The First Hello",
     content:
-      "Today will always be unforgettable – the day you found me on the matrimony site and simply said 'hi.' That one small word started it all. I told you about myself – what I do, where I come from, and the kind of partner I dreamt of. I didn’t know then that this simple exchange would change my life forever. It was the very first page of our story, Sonaii.",
+      "First was on 27th June 5:15, she messaged me on my Facebook. I had joined and posted an advertisement on a matrimony page and she found me there and messaged me 'Hi' on there but the message went to spam so I wasn't able to reply to it that day. This is where our story began.",
     image: "/images/diary1.jpg",
   },
   {
@@ -32,57 +32,27 @@ export const demoEntriesData: DiaryEntry[] = [
     date: "2025-06-28",
     title: "Opening Up",
     content:
-      "We continued talking today, and I shared even more about my life and the kind of person I hope to spend it with. You listened, you responded, and in those conversations I felt something pure and real. It felt like we weren’t just two strangers anymore — we were two souls trying to understand each other.",
+      "Next day at 2 am I saw that message request in spam and replied her with all my details. I apologized for replying late and gave her my details like date of birth, place, education, future aspirations, and what kind of partner I am looking for and what are my dreams that I want to fulfill with my partner. Then she wanted to confirm if I am 27 because according to her I was looking a bit older. So I told her I am a bit overweight but I'll work on it for my partner anyways. Then she gave her details and photo as well (but sent that photo with view once only). When I opened that photo I was stunned. It was the most beautiful lady I had laid my eyes on. She said that all that matters to her is how the person is and how much he will love her and nothing else, not looks or money. She said she wants loyalty, a caring person and said she wants to know me before coming into a relation, to which I agreed.\n\nThen I messaged her from my main account and said we can speak from this account from now on because until now I was using an alt account on Facebook. I permanently deleted that account. I told her that her birthday and my birthday are exactly the same! We both were shocked and laughed at it. She was teaching her students while texting me during this time. I said great then can we have an audio call for 2 mins for a quick vibe check. She denied as she wanted more time to know me and not rush, but gave me a photo in view only mode. She asked for my zodiac and gan and I gave those details. She said family does raise issues when astrology doesn't match and said it has happened to her in the past. She asked if I liked her so far. I said yes and she asked about my expectations with my partner. I gave her my entire detail that I want my journey of life to be nice and for that a great partner is required. I will take care of her forever, make sure everything she says is listened to and will unconditionally love her forever. We spoke on this topic for a bit and then about general things like likes and dislikes. Finally, she gave me a few more pictures in view once mode, and then we wished each other good night at 12:10 am.",
     image: "/images/diary2.jpg",
   },
   {
     id: "3",
     date: "2025-06-29",
-    title: "From My Main Account",
-    content:
-      "Today I messaged you from my main account, and that made everything feel more personal. I also realized that we share the same birthday, June 20 — what a magical coincidence! It felt like destiny had its hand in bringing us together. We laughed about it, but inside, I was already feeling a deep connection with you.",
-    image: "/images/diary3.jpg",
-  },
-  {
-    id: "2",
-    date: "2025-06-29",
-    title: "Day 2 with Sonaii",
-    content:
-      "We talked about studies, jobs, and the future. I loved how determined you are, and it made me imagine what our journey together could look like.",
-    image: "/images/diary2.jpg",
-  },
-  {
-    id: "3",
-    date: "2025-06-30",
     title: "Day 3 with Sonaii",
     content:
-      "We had our very first call today. Even though it was short, hearing your voice made my heart race. Suddenly, you felt so much closer.",
+      "Today we shared a warm and caring conversation filled with everyday details and support. I explained how Netflix and Amazon Prime need separate downloads. I encouraged her to focus on her studies and wished her success for the exam the next day. She mentioned her younger sibling’s plans and possible visit to her elder sister’s house, and I shared about my Airtel subscription offering many benefits. We talked about her college near Khardah and how her exams were going—some good, some bad, and some mixed experiences. I reassured her not to be disturbed too much, urged her to eat well, and hoped her exams would go smoothly. Later, I checked if she had dinner and wished her good night, hoping she would rest well and perform well in her exam. These exchanges deepened our connection as we cared for and supported each other through daily life and challenges.",
     image: "/images/diary3.jpg",
   },
-  {
-    id: "4",
-    date: "2025-07-01",
-    title: "Day 4 with Sonaii",
-    content:
-      "Today I discovered something magical – our birthdays match! It felt like destiny was aligning our paths. We laughed about it, but deep down I knew this was more than coincidence.",
-    image: "/images/diary4.jpg",
-  },
+
   {
     id: "5",
-    date: "2025-07-02",
-    title: "Day 5 with Sonaii",
+    date: "2025-06-30",
+    title: "Day 4 with Sonaii",
     content:
-      "We had our very first call today. Even though it was short, hearing your voice made my heart race. Suddenly, you felt so much closer.",
+      "Good morning greetings started the day warmly. I asked her how her exam went, and she replied that it went well. We chatted about our current activities, and I invited her for an audio call. She agreed but mentioned she was at the station. She said if I was busy, it was okay not to call. We exchanged playful remarks about catching the train and timing. She mentioned her father called her and the train was arriving soon. She planned to go home and complete her tasks. I wished her well, told her to rest, and hoped she would sleep peacefully. It was a day full of caring support and shared moments despite the busy schedules.",
     image: "/images/diary5.jpg",
   },
-  {
-    id: "6",
-    date: "2025-07-03",
-    title: "Day 6 with Sonaii",
-    content:
-      "Today I discovered something magical – our birthdays match! It felt like destiny was aligning our paths. We laughed about it, but deep down I knew this was more than coincidence.",
-    image: "/images/diary6.jpg",
-  },
+
   {
     id: "7",
     date: "2025-07-04",
@@ -478,6 +448,8 @@ export const demoEntriesData: DiaryEntry[] = [
 ];
 
 // Demo memories - add your real photos here!
+// Updated demoMemoriesData with images array
+// Updated demoMemoriesData with specified image counts
 export const demoMemoriesData: Memory[] = [
   {
     id: "1",
@@ -485,7 +457,7 @@ export const demoMemoriesData: Memory[] = [
     title: "Our First Conversation",
     description:
       "The very first message that started our beautiful love story. A moment I’ll treasure forever.",
-    image: "/images/june27-1.jpeg",
+    images: ["/images/june27-1.jpeg", "/images/june27-2.jpeg"],
     type: "image",
   },
   {
@@ -494,7 +466,7 @@ export const demoMemoriesData: Memory[] = [
     title: "Matching Horoscopes",
     description:
       "The first time we matched our hands for compatibility with an astrologer named Jagadish. A sweet and memorable step together.",
-    image: "/images/jul3-1.jpeg",
+    images: Array.from({ length: 5 }, (_, i) => `/images/jul3-${i + 1}.jpeg`),
     type: "image",
   },
   {
@@ -503,25 +475,25 @@ export const demoMemoriesData: Memory[] = [
     title: "Our First Unplanned Date",
     description:
       "That unexpected call from you to meet at Sealdah, before you left for Chunakhali to see your mom. The start of something magical.",
-    image: "/images/jul11-1.jpeg",
+    images: Array.from({ length: 6 }, (_, i) => `/images/jul11-${i + 1}.jpeg`),
     type: "image",
   },
   {
     id: "4",
     date: "2025-07-28",
-    title: "Our First Planned Date",
+    title: "First Movie Together at Inox",
     description:
-      "When I went to Habra to pick you up, and we went to Inox Forum Mall together. It was the first time I truly felt your deep trust in me.",
-    image: "/images/jul28-1.jpeg",
+      "When I went to Habra to pick you up, and we went to Inox Forum Mall together. Not only was it our first planned date, but it was also your very first movie theatre experience—a memory I’ll always cherish.",
+    images: Array.from({ length: 9 }, (_, i) => `/images/jul28-${i + 1}.jpeg`),
     type: "image",
   },
   {
     id: "5",
     date: "2025-08-03",
-    title: "Dinner at Hazarduari",
+    title: "Our First Breakfast at Hazarduari",
     description:
-      "Our second date at Barasat, where I captured this moment at Hazarduari restaurant. A simple yet perfect evening.",
-    image: "/images/aug3-1.jpeg",
+      "Our second date at Barasat became extra special because it was our very first breakfast together, shared at Hazarduari restaurant. A simple yet perfect noon filled with warmth.",
+    images: Array.from({ length: 18 }, (_, i) => `/images/aug3-${i + 1}.jpeg`),
     type: "image",
   },
   {
@@ -529,17 +501,17 @@ export const demoMemoriesData: Memory[] = [
     date: "2025-08-10",
     title: "Sealdah Date – A Recreation",
     description:
-      "Another planned date at Sealdah, recreating our first meeting. I dropped you off at your aunt’s home afterwards, just like before.",
-    image: "/images/aug10-1.jpeg",
+      "Another planned date at Sealdah, recreating our first meeting. I dropped you off at your sister’s home in Sonarpur afterwards, just like before.",
+    images: Array.from({ length: 7 }, (_, i) => `/images/aug10-${i + 1}.jpeg`),
     type: "image",
   },
   {
     id: "7",
     date: "2025-08-16",
-    title: "Taking Care of You",
+    title: "Our First Lunch in Barasat",
     description:
-      "A special date at Barasat, where I accompanied you for your eye treatment. Small moments of care that mean the most.",
-    image: "/images/aug16-1.jpeg",
+      "A special date at Barasat, where I accompanied you for your eye treatment. It also became our very first lunch together—a simple yet deeply meaningful moment of care and love.",
+    images: Array.from({ length: 10 }, (_, i) => `/images/aug16-${i + 1}.jpeg`),
     type: "image",
   },
 ];
@@ -554,6 +526,7 @@ export const personalInfo = {
   partnerLocation: "House number 75, Habra post office road, West Bengal",
   meetingDate: "June 27th, 2025",
   relationshipStart: "2025-06-27",
+  meetingDateFormat: new Date("2025-06-27"),
 };
 
 // Proposal text - customize this with your own words!

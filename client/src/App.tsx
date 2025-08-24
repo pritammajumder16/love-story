@@ -1,4 +1,5 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navigation } from "@/components/navigation";
@@ -21,13 +22,19 @@ function Router() {
 }
 
 function App() {
+  const [location] = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <TooltipProvider>
-      <div className=" overflow-y-hidden min-h-screen overflow-x-hidden bg-background text-foreground">
+      <div className="overflow-y-hidden min-h-screen overflow-x-hidden bg-background text-foreground">
         <FloatingHearts />
         <Navigation />
         <Toaster />
-
         <Router />
         <Footer />
       </div>

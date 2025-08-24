@@ -77,7 +77,6 @@ export default function Diary() {
       const newEntry: DiaryEntry = {
         id: Date.now().toString(),
         ...data,
-        image: `/images/diary${entries.length + 1}.jpg`,
       };
       setEntries((prev) =>
         [...prev, newEntry].sort(
@@ -244,7 +243,7 @@ export default function Diary() {
           </ScrollReveal>
 
           {/* Timeline */}
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             {isLoading ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-romantic-pink mx-auto"></div>
@@ -274,68 +273,37 @@ export default function Diary() {
                 {entries.map((entry, index) => (
                   <ScrollReveal key={entry.id} delay={index * 0.1}>
                     <motion.div
-                      className={`flex flex-col ${
-                        index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                      } items-center gap-8`}
                       whileHover={{ scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
-                      <div className="md:w-1/3">
-                        <img
-                          src={
-                            entry.image ||
-                            `https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400`
-                          }
-                          alt={`Memory from ${entry.title}`}
-                          className="rounded-2xl shadow-lg w-full h-64 object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
-                          }}
-                        />
-                      </div>
-                      <div
-                        className={`md:w-2/3 ${
-                          index % 2 === 0 ? "md:pl-8" : "md:pr-8"
-                        }`}
-                      >
-                        <Card className="love-card shadow-xl">
-                          <CardHeader>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <div className="bg-romantic-pink text-white rounded-full w-12 h-12 flex items-center justify-center font-bold mr-4">
-                                  {index + 1}
-                                </div>
-                                <div>
-                                  <h3 className="font-romantic text-2xl font-semibold text-romantic-purple">
-                                    {entry.title}
-                                  </h3>
-                                  <p className="text-romantic-pink font-medium">
-                                    {format(
-                                      parseISO(entry.date),
-                                      "MMMM do, yyyy"
-                                    )}
-                                  </p>
-                                </div>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => openEditDialog(entry)}
-                                className="text-romantic-purple hover:text-romantic-pink"
-                                data-testid={`button-edit-${entry.id}`}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
+                      <Card className="love-card shadow-xl p-6">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="font-romantic text-2xl font-semibold text-romantic-purple">
+                                {entry.title}
+                              </h3>
+                              <p className="text-romantic-pink font-medium">
+                                {format(parseISO(entry.date), "MMMM do, yyyy")}
+                              </p>
                             </div>
-                          </CardHeader>
-                          <CardContent>
-                            <p className="text-gray-600 leading-relaxed">
-                              {entry.content}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => openEditDialog(entry)}
+                              className="text-romantic-purple hover:text-romantic-pink"
+                              data-testid={`button-edit-${entry.id}`}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                            {entry.content}
+                          </p>
+                        </CardContent>
+                      </Card>
                     </motion.div>
                   </ScrollReveal>
                 ))}
