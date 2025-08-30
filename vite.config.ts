@@ -8,7 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+      includeAssets: [
+        "images/icon-192x192.jpeg", // Keep JPEG
+        "images/icon-512x512.jpeg", // Keep JPEG
+      ],
       manifest: {
         name: "Prit Paro",
         short_name: "Prit Paro",
@@ -21,33 +24,24 @@ export default defineConfig({
         orientation: "portrait",
         icons: [
           {
-            src: "/images/icon-192x192.jpeg",
+            src: "/images/icon-192x192.jpeg", // Keep JPEG
             sizes: "192x192",
-            type: "image/jpeg",
-            purpose: "maskable any",
+            type: "image/jpeg", // Keep JPEG
+            purpose: "any maskable",
           },
           {
-            src: "/images/icon-512x512.jpeg",
+            src: "/images/icon-512x512.jpeg", // Keep JPEG
             sizes: "512x512",
-            type: "image/jpeg",
-            purpose: "maskable any",
-          },
-          // Add more sizes for better compatibility
-          {
-            src: "/images/icon-384x384.jpeg",
-            sizes: "384x384",
-            type: "image/jpeg",
-          },
-          {
-            src: "/images/icon-256x256.jpeg",
-            sizes: "256x256",
-            type: "image/jpeg",
+            type: "image/jpeg", // Keep JPEG
+            purpose: "any maskable",
           },
         ],
       },
+      devOptions: {
+        enabled: true,
+      },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,json}"],
-        navigateFallback: null,
+        globPatterns: ["**/*.{js,css,html,png,jpg,jpeg,svg,ico}"],
         runtimeCaching: [
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|ico)$/,
