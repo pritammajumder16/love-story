@@ -9,14 +9,14 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: [
+        "favicon.ico",
         "images/icon-192x192.jpeg",
         "images/icon-512x512.jpeg",
-        // Add other assets if needed (e.g., from @assets)
         "attached_assets/fallback.jpg",
       ],
       manifest: {
-        name: "Our Love Games",
-        short_name: "Love Games",
+        name: "Prit Paro",
+        short_name: "Prit Paro",
         description: "A collection of fun games to celebrate our love!",
         theme_color: "#f8a5c2",
         background_color: "#f8a5c2",
@@ -41,10 +41,10 @@ export default defineConfig({
         enabled: true,
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,png,jpg,jpeg,svg}"],
+        globPatterns: ["**/*.{js,css,html,png,jpg,jpeg,svg,ico}"],
         runtimeCaching: [
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
+            urlPattern: /\.(?:png|jpg|jpeg|svg|ico)$/,
             handler: "CacheFirst",
             options: {
               cacheName: "images",
