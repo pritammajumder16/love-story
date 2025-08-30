@@ -9,8 +9,10 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: [
-        "images/icon-192x192.jpeg", // Keep JPEG
-        "images/icon-512x512.jpeg", // Keep JPEG
+        "favicon.ico",
+        "images/icon-192x192.jpg", // Changed to .jpg
+        "images/icon-512x512.jpg", // Changed to .jpg
+        "attached_assets/fallback.jpg",
       ],
       manifest: {
         name: "Prit Paro",
@@ -24,15 +26,15 @@ export default defineConfig({
         orientation: "portrait",
         icons: [
           {
-            src: "/images/icon-192x192.jpeg", // Keep JPEG
+            src: "/images/icon-192x192.jpg", // Changed to .jpg
             sizes: "192x192",
-            type: "image/jpeg", // Keep JPEG
+            type: "image/jpeg", // Keep this as jpeg (it's the MIME type)
             purpose: "any maskable",
           },
           {
-            src: "/images/icon-512x512.jpeg", // Keep JPEG
+            src: "/images/icon-512x512.jpg", // Changed to .jpg
             sizes: "512x512",
-            type: "image/jpeg", // Keep JPEG
+            type: "image/jpeg", // Keep this as jpeg (it's the MIME type)
             purpose: "any maskable",
           },
         ],
