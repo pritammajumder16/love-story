@@ -1,11 +1,8 @@
 import { motion } from "framer-motion";
 import {
   Upload,
-  Calendar,
   Trash2,
   Heart,
-  Image as ImageIcon,
-  Video,
   ChevronLeft,
   ChevronRight,
   X,
@@ -36,10 +33,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { pageTransition, staggerContainer } from "@/lib/animations";
 import { demoMemoriesData, Memory } from "@/data/demoData";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 // Animation variants for cards
 const cardVariants = {
@@ -58,7 +57,7 @@ const cardVariants = {
   },
 };
 
-// Update schema to handle multiple images
+// Schema for form validation
 const memoryFormSchema = z.object({
   date: z.string().min(1, "Date is required"),
   title: z.string().min(1, "Title is required"),
@@ -72,14 +71,17 @@ export default function Memories() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [memories, setMemories] = useState<Memory[]>(demoMemoriesData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [currentImageIndices, setCurrentImageIndices] = useState<{
-    [key: string]: number;
-  }>({});
+  const [currentImageIndices, setCurrentImageIndices] = useState<
+    Record<string, number>
+  >({});
   const [selectedMemory, setSelectedMemory] = useState<{
     id: string;
     images: string[];
     currentIndex: number;
   } | null>(null);
+  const [imageLoadingProgress, setImageLoadingProgress] = useState<
+    Record<string, number>
+  >({});
   const { toast } = useToast();
 
   const form = useForm<MemoryFormData>({
@@ -120,6 +122,11 @@ export default function Memories() {
       const newIndices = { ...prev };
       delete newIndices[id];
       return newIndices;
+    });
+    setImageLoadingProgress((prev) => {
+      const newProgress = { ...prev };
+      delete newProgress[id];
+      return newProgress;
     });
     toast({
       title: "Memory Deleted",
@@ -200,6 +207,25 @@ export default function Memories() {
       });
     }
   };
+
+  // Simulate image loading progress
+  useEffect(() => {
+    const updateProgress = (memoryId: string) => {
+      setImageLoadingProgress((prev) => ({
+        ...prev,
+        [memoryId]: prev[memoryId] ? Math.min(prev[memoryId] + 10, 100) : 10,
+      }));
+    };
+
+    memories.forEach((memory) => {
+      if (!imageLoadingProgress[memory.id]) {
+        const interval = setInterval(() => {
+          updateProgress(memory.id);
+        }, 200);
+        return () => clearInterval(interval);
+      }
+    });
+  }, [memories, imageLoadingProgress]);
 
   return (
     <motion.div
@@ -456,13 +482,15 @@ export default function Memories() {
                         />
                       </motion.div>
                       {/* Carousel */}
-                      <div className="relative">
-                        <img
+                      <div className="relative flex items-center justify-center">
+                        <LazyLoadImage
                           src={
                             memory.images[currentImageIndices[memory.id] || 0]
                           }
                           alt={memory.title}
                           className="rounded-2xl w-full h-56 object-cover mb-6 cursor-pointer border-2 border-romantic-pink/20"
+                          effect="blur"
+                          placeholderSrc="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100"
                           onClick={() =>
                             handleImageClick(
                               memory.id,
@@ -474,30 +502,49 @@ export default function Memories() {
                               "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
                           }}
                           data-testid={`image-${memory.id}`}
+                          afterLoad={() => {
+                            setImageLoadingProgress((prev) => ({
+                              ...prev,
+                              [memory.id]: 100,
+                            }));
+                          }}
                         />
+                        {imageLoadingProgress[memory.id] !== undefined &&
+                          imageLoadingProgress[memory.id] < 100 && (
+                            <div className="absolute bottom-0 w-full h-2 bg-romantic-pink/20 rounded-b-2xl overflow-hidden">
+                              <div
+                                className="h-full bg-romantic-pink transition-all duration-300"
+                                style={{
+                                  width: `${
+                                    imageLoadingProgress[memory.id] || 0
+                                  }%`,
+                                }}
+                              />
+                            </div>
+                          )}
                         {memory.images.length > 1 && (
                           <>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full"
+                              className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full w-12 h-12"
                               onClick={() =>
                                 handlePrevImage(memory.id, memory.images.length)
                               }
                               data-testid={`button-prev-image-${memory.id}`}
                             >
-                              <ChevronLeft className="h-5 w-5" />
+                              <ChevronLeft className="h-7 w-7" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full"
+                              className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full w-12 h-12"
                               onClick={() =>
                                 handleNextImage(memory.id, memory.images.length)
                               }
                               data-testid={`button-next-image-${memory.id}`}
                             >
-                              <ChevronRight className="h-5 w-5" />
+                              <ChevronRight className="h-7 w-7" />
                             </Button>
                           </>
                         )}
@@ -589,12 +636,15 @@ export default function Memories() {
             </div>
             {selectedMemory && (
               <div className="relative romantic-frame p-4 rounded-2xl">
-                <img
+                <LazyLoadImage
                   src={selectedMemory.images[selectedMemory.currentIndex]}
                   alt="Selected memory"
                   className="w-full max-h-[80vh] object-contain rounded-xl"
+                  effect="blur"
+                  placeholderSrc="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=200"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src =
+                    const target = e.target as HTMLImageElement;
+                    target.src =
                       "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=800";
                   }}
                   data-testid="popup-image"
@@ -604,20 +654,20 @@ export default function Memories() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full"
+                      className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full w-12 h-12"
                       onClick={handlePrevModalImage}
                       data-testid="button-prev-modal-image"
                     >
-                      <ChevronLeft className="h-5 w-5" />
+                      <ChevronLeft className="h-7 w-7" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full"
+                      className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-romantic-dark/50 hover:bg-romantic-purple/70 text-white rounded-full w-12 h-12"
                       onClick={handleNextModalImage}
                       data-testid="button-next-modal-image"
                     >
-                      <ChevronRight className="h-5 w-5" />
+                      <ChevronRight className="h-7 w-7" />
                     </Button>
                   </>
                 )}

@@ -9,6 +9,8 @@ import Diary from "@/pages/diary";
 import Memories from "@/pages/memories";
 import NotFound from "@/pages/not-found";
 import Footer from "./pages/footer";
+import LoveGame from "./pages/loveGames";
+import Activities from "./pages/activities";
 
 function Router() {
   return (
@@ -16,6 +18,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/diary" component={Diary} />
       <Route path="/memories" component={Memories} />
+      <Route path="/games" component={LoveGame} />
+      <Route path="/activities" component={Activities} />
       <Route component={NotFound} />
     </Switch>
   );

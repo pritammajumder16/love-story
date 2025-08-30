@@ -44,6 +44,8 @@ export default function Diary() {
   const [editingEntry, setEditingEntry] = useState<DiaryEntry | null>(null);
   const [entries, setEntries] = useState<DiaryEntry[]>(demoEntriesData);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const entriesPerPage = 5;
   const { toast } = useToast();
 
   const form = useForm<DiaryFormData>({
@@ -92,6 +94,7 @@ export default function Diary() {
     setIsDialogOpen(false);
     form.reset();
     setIsLoading(false);
+    setCurrentPage(1); // Reset to first page after adding/updating
   };
 
   const openAddDialog = () => {
@@ -112,6 +115,18 @@ export default function Diary() {
       content: entry.content,
     });
     setIsDialogOpen(true);
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(entries.length / entriesPerPage);
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentEntries = entries.slice(indexOfFirstEntry, indexOfLastEntry);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
@@ -264,50 +279,96 @@ export default function Diary() {
                 </Card>
               </ScrollReveal>
             ) : (
-              <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                animate="visible"
-                className="space-y-8"
-              >
-                {entries.map((entry, index) => (
-                  <ScrollReveal key={entry.id} delay={index * 0.1}>
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Card className="love-card shadow-xl p-6">
-                        <CardHeader>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h3 className="font-romantic text-2xl font-semibold text-romantic-purple">
-                                {entry.title}
-                              </h3>
-                              <p className="text-romantic-pink font-medium">
-                                {format(parseISO(entry.date), "MMMM do, yyyy")}
-                              </p>
+              <>
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  className="space-y-8"
+                >
+                  {currentEntries.map((entry, index) => (
+                    <ScrollReveal key={entry.id} delay={index * 0.1}>
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <Card className="love-card shadow-xl p-6">
+                          <CardHeader>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h3 className="font-romantic text-2xl font-semibold text-romantic-purple">
+                                  {entry.title}
+                                </h3>
+                                <p className="text-romantic-pink font-medium">
+                                  {format(
+                                    parseISO(entry.date),
+                                    "MMMM do, yyyy"
+                                  )}
+                                </p>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => openEditDialog(entry)}
+                                className="text-romantic-purple hover:text-romantic-pink"
+                                data-testid={`button-edit-${entry.id}`}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
                             </div>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => openEditDialog(entry)}
-                              className="text-romantic-purple hover:text-romantic-pink"
-                              data-testid={`button-edit-${entry.id}`}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                            {entry.content}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  </ScrollReveal>
-                ))}
-              </motion.div>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                              {entry.content}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    </ScrollReveal>
+                  ))}
+                </motion.div>
+
+                {/* Pagination Controls */}
+                <ScrollReveal delay={0.3}>
+                  <div className="flex justify-center items-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      disabled={currentPage === 1}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                      data-testid="button-prev-page"
+                    >
+                      Previous
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          onClick={() => handlePageChange(page)}
+                          className={
+                            currentPage === page
+                              ? "bg-romantic-pink text-white"
+                              : "text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                          }
+                          data-testid={`button-page-${page}`}
+                        >
+                          {page}
+                        </Button>
+                      )
+                    )}
+                    <Button
+                      variant="outline"
+                      disabled={currentPage === totalPages}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                      data-testid="button-next-page"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </ScrollReveal>
+              </>
             )}
           </div>
         </div>

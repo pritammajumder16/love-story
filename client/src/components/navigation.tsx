@@ -25,20 +25,23 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const navItems = [
-    { href: "/", label: "Home", emoji: "🏠" },
-    { href: "/diary", label: "Our Story", emoji: "📖" },
-    { href: "/memories", label: "Memories", emoji: "💕" },
+    { href: "/", label: "Home" },
+    { href: "/diary", label: "Our Story" },
+    { href: "/memories", label: "Memories" },
+    { href: "/games", label: "Games" },
+    {
+      href: "/activities",
+      label: "Activities",
+    },
   ];
 
   const NavLink = ({
     href,
     label,
-    emoji,
     onClick,
   }: {
     href: string;
     label: string;
-    emoji: string;
     onClick?: () => void;
   }) => (
     <Link href={href} onClick={onClick}>
@@ -57,7 +60,6 @@ export function Navigation() {
           } px-5 py-2 rounded-full`}
           data-testid={`nav-link-${label.toLowerCase().replace(/\s+/g, "-")}`}
         >
-          <span className="mr-2">{emoji}</span>
           {label}
         </Button>
       </motion.div>
