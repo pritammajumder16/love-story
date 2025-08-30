@@ -11,6 +11,7 @@ import NotFound from "@/pages/not-found";
 import Footer from "./pages/footer";
 import LoveGame from "./pages/loveGames";
 import Activities from "./pages/activities";
+import { InstallPWA } from "./pages/pwaInstallation";
 
 function Router() {
   return (
@@ -86,7 +87,7 @@ function App() {
         <Navigation />
         <Toaster />
         <Router />
-        <Footer />
+        <Footer /> <InstallPWA />
       </div>
     </TooltipProvider>
   );
