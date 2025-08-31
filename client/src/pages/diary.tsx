@@ -328,44 +328,73 @@ export default function Diary() {
                   ))}
                 </motion.div>
 
-                {/* Pagination Controls */}
+                {/* Responsive Pagination Controls */}
                 <ScrollReveal delay={0.3}>
-                  <div className="flex justify-center items-center gap-2 mt-8">
-                    <Button
-                      variant="outline"
-                      disabled={currentPage === 1}
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
-                      data-testid="button-prev-page"
-                    >
-                      Previous
-                    </Button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (page) => (
-                        <Button
-                          key={page}
-                          variant={currentPage === page ? "default" : "outline"}
-                          onClick={() => handlePageChange(page)}
-                          className={
-                            currentPage === page
-                              ? "bg-romantic-pink text-white"
-                              : "text-romantic-purple hover:bg-romantic-pink hover:text-white"
-                          }
-                          data-testid={`button-page-${page}`}
-                        >
-                          {page}
-                        </Button>
-                      )
-                    )}
-                    <Button
-                      variant="outline"
-                      disabled={currentPage === totalPages}
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
-                      data-testid="button-next-page"
-                    >
-                      Next
-                    </Button>
+                  <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
+                    {/* Mobile View: Previous, Current Page, Next */}
+                    <div className="flex items-center gap-2 md:hidden">
+                      <Button
+                        variant="outline"
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                        data-testid="button-prev-page"
+                      >
+                        Previous
+                      </Button>
+                      <span
+                        className="text-romantic-purple font-medium px-4 py-2"
+                        data-testid="current-page"
+                      >
+                        PageSay                        </span>
+                      <Button
+                        variant="outline"
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                        data-testid="button-next-page"
+                      >
+                        Next
+                      </Button>
+                    </div>
+                    {/* Desktop View: Full Pagination */}
+                    <div className="hidden md:flex justify-center items-center gap-2 flex-wrap">
+                      <Button
+                        variant="outline"
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                        data-testid="button-prev-page"
+                      >
+                        Previous
+                      </Button>
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (page) => (
+                          <Button
+                            key={page}
+                            variant={currentPage === page ? "default" : "outline"}
+                            onClick={() => handlePageChange(page)}
+                            className={
+                              currentPage === page
+                                ? "bg-romantic-pink text-white"
+                                : "text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                            }
+                            data-testid={`button-page-${page}`}
+                          >
+                            {page}
+                          </Button>
+                        )
+                      )}
+                      <Button
+                        variant="outline"
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className="text-romantic-purple hover:bg-romantic-pink hover:text-white"
+                        data-testid="button-next-page"
+                      >
+                        Next
+                      </Button>
+                    </div>
                   </div>
                 </ScrollReveal>
               </>
