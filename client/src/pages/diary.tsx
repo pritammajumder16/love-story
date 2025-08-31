@@ -346,7 +346,8 @@ export default function Diary() {
                         className="text-romantic-purple font-medium px-4 py-2"
                         data-testid="current-page"
                       >
-                        PageSay                        </span>
+                        Page {currentPage}
+                      </span>
                       <Button
                         variant="outline"
                         disabled={currentPage === totalPages}
@@ -404,4 +405,4 @@ export default function Diary() {
       </section>
     </motion.div>
   );
-}
+                              }
