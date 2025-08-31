@@ -802,4 +802,4 @@ export default function Activities() {
       </section>
     </motion.div>
   );
-                 }
+  }
