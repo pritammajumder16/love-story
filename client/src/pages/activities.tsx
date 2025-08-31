@@ -305,9 +305,7 @@ const initialActivities: Activity[] = [
     id: "44",
     title: "Mini Vacation",
     description:
-      "Plan a quick getaway to the hills, beach, or nearby town. Make it your secret escape
-
-.",
+      "Plan a quick getaway to the hills, beach, or nearby town. Make it your secret escape.",
   },
   {
     id: "45",
