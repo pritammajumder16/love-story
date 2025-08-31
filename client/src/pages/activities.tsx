@@ -126,8 +126,7 @@ const initialActivities: Activity[] = [
     id: "14",
     title: "Candlelight Dinner at Home",
     description:
-      "Turn your living room into a restaurant. Cook or order food, light candles, and makeIENTO
-make it your private date night.",
+      "Turn your living room into a restaurant. Cook or order food, light candles, and make it your private date night.",
   },
   {
     id: "15",
