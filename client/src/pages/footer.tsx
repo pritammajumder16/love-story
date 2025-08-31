@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, Download, Sparkles } from "lucide-react";
+import { Heart, Download, Sparkles, CheckCircle } from "lucide-react";
 import { personalInfo, demoMemoriesData } from "@/data/demoData";
 import { useState, useEffect } from "react";
 
@@ -32,7 +32,6 @@ export default function Footer() {
 
     const handleAppInstalled = () => {
       setIsInstalled(true);
-      setInstallPrompt(null);
     };
 
     // Check if already installed
@@ -53,17 +52,40 @@ export default function Footer() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!installPrompt) return;
+    if (installPrompt) {
+      // If we have the prompt available, use it
+      try {
+        await installPrompt.prompt();
+        const { outcome } = await installPrompt.userChoice;
 
-    try {
-      await installPrompt.prompt();
-      const { outcome } = await installPrompt.userChoice;
-
-      if (outcome === "accepted") {
-        console.log("User accepted the install prompt");
+        if (outcome === "accepted") {
+          console.log("User accepted the install prompt");
+          setIsInstalled(true);
+        }
+      } catch (error) {
+        console.error("Error installing app:", error);
       }
-    } catch (error) {
-      console.error("Error installing app:", error);
+    } else if (isInstalled) {
+      // If already installed, guide user to reinstall
+      if (
+        navigator.userAgent.includes("Android") ||
+        navigator.userAgent.includes("iPhone")
+      ) {
+        // Mobile devices
+        alert(
+          "To reinstall, please uninstall the app first from your home screen, then visit this page again to install."
+        );
+      } else {
+        // Desktop browsers
+        alert(
+          "To reinstall, please remove the app from your browser settings, then refresh this page to install again."
+        );
+      }
+    } else {
+      // If no prompt available and not installed
+      alert(
+        "Installation is not available at this time. Please try again later."
+      );
     }
   };
 
@@ -136,28 +158,41 @@ export default function Footer() {
           ))}
         </motion.div>
 
-        {/* PWA Install Button - Only shows if available and not already installed */}
-        {installPrompt && !isInstalled && (
-          <motion.div
-            className="mb-8"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            viewport={{ once: true }}
+        {/* PWA Install Button - Always shown */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <button
+            onClick={handleInstallClick}
+            className={`group font-semibold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center mx-auto transform hover:-translate-y-1 ${
+              isInstalled
+                ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-emerald-600 hover:to-green-500"
+                : "bg-gradient-to-r from-romantic-pink to-purple-500 hover:from-purple-500 hover:to-romantic-pink"
+            } text-white`}
           >
-            <button
-              onClick={handleInstallClick}
-              className="group bg-gradient-to-r from-romantic-pink to-purple-500 hover:from-purple-500 hover:to-romantic-pink text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center mx-auto transform hover:-translate-y-1"
-            >
-              <Sparkles className="w-5 h-5 mr-2 group-hover:animate-pulse" />
-              <Download className="w-5 h-5 mr-2" />
-              Install Our Love App
-            </button>
-            <p className="text-white/60 text-sm mt-2">
-              Add to your home screen for easy access
-            </p>
-          </motion.div>
-        )}
+            {isInstalled ? (
+              <>
+                <CheckCircle className="w-5 h-5 mr-2" />
+                App Installed - Reinstall?
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                <Download className="w-5 h-5 mr-2" />
+                Install Our Love App
+              </>
+            )}
+          </button>
+          <p className="text-white/60 text-sm mt-2">
+            {isInstalled
+              ? "Click to learn how to reinstall"
+              : "Add to your home screen for easy access"}
+          </p>
+        </motion.div>
 
         <motion.div
           className="border-t border-white/20 pt-8"
